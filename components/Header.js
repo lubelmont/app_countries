@@ -1,27 +1,33 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Header = () => {
   return (
-    <View style={styles.headerContainer}>
-      <Image 
-        source={require('../assets/iconoApp.png')} 
-        style={styles.headerAppIcon} 
-      />
-      <Text style={styles.headerTitle}>Countries App</Text>
-    </View>
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <View style={styles.headerContainer}>
+        <Image 
+          source={require('../assets/iconoApp.png')} 
+          style={styles.headerAppIcon} 
+        />
+        <Text style={styles.headerTitle}>Countries App</Text>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: '#ffffff',
+    width: '100%',
+  },
   headerContainer: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
-    paddingTop: 15,
-    paddingBottom: 15,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
