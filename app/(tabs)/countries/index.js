@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
-import { fecthCountries } from '../lib/countryApiCosumer';
-import Header from './Header';
-import RegionSelector from './RegionSelector'; 
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
+import { fecthCountries } from '../../../lib/countryApiCosumer';
+import Header from '../../../components/Header';
+import RegionSelector from '../../../components/RegionSelector';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
+    const router = useRouter();
     const [countries, setCountries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedRegion, setSelectedRegion] = useState('euro');
-
-    // Definir las regiones disponibles
-    const regions = [
-        { label: 'Europa', value: 'euro' },
-        { label: 'América', value: 'americas' },
-        { label: 'Asia', value: 'asia' },
-        { label: 'África', value: 'africa' },
-        { label: 'Oceanía', value: 'oceania' },
-    ];
 
     useEffect(() => {
         const loadCountries = async () => {
@@ -39,7 +32,10 @@ export default function HomeScreen({ navigation }) {
     }, [selectedRegion]);
 
     const handleCountryPress = (countryName) => {
-        navigation.navigate('CountryDetail', { countryName });
+        // Usar router.push en lugar de navigation.navigate
+        router.push(`/country/${encodeURIComponent(countryName)}`);
+        //console.log('Navegando a detalles de:', countryName);
+        //router.push(`/country/mexico`);
     };
 
     const handleRegionChange = (region) => {
@@ -81,9 +77,20 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
+            <Header />
             
+            <RegionSelector 
+                selectedRegion={selectedRegion}
+                onRegionChange={handleRegionChange}
+            />
 
-
+            <FlatList
+                data={countries}
+                renderItem={renderCountryItem}
+                keyExtractor={(item, index) => item.cca2 || index.toString()}
+                contentContainerStyle={styles.listContent}
+                showsVerticalScrollIndicator={false}
+            />
         </View>
     );
 }
@@ -106,40 +113,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#666',
     },
-    // Estilos para los botones de región
-    regionsContainer: {
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        backgroundColor: '#ffffff',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-        elevation: 3,
-    },
-    regionButton: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        marginRight: 10,
-        borderRadius: 20,
-        backgroundColor: '#f0f0f0',
-        borderWidth: 1,
-        borderColor: '#e0e0e0',
-    },
-    regionButtonActive: {
-        backgroundColor: '#4A90E2',
-        borderColor: '#4A90E2',
-    },
-    regionButtonText: {
-        fontSize: 14,
-        fontWeight: '500',
-        color: '#666',
-    },
-    regionButtonTextActive: {
-        color: '#ffffff',
-        fontWeight: '600',
-    },
-    // Estilos de las cards de países
     countryCard: {
         backgroundColor: '#ffffff',
         borderRadius: 12,
